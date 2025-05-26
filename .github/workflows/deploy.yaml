@@ -46,7 +46,7 @@ jobs:
 
     - name: Kubernetes Installation with eksctl
       run: |
-         eksctl create cluster --name ${{ var.EKS_CLUSTER_NAME }} \
+         eksctl create cluster --name Kubernetes-gitactions-cluster \
          - region ${{ secrets.AWS_REGION }} \
          - node-type t3.micro
  
