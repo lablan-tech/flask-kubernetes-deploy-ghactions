@@ -46,7 +46,7 @@ jobs:
 
     - name: Kubernetes Installation with eksctl
       run: |
-         eksctl create cluster \
+         eksctl delete cluster \
          --name Kubernetes-ghactions-cluster  \
          --region eu-west-2 \
          
