@@ -46,9 +46,15 @@ jobs:
 
     - name: Kubernetes Installation with eksctl
       run: |
-         eksctl create cluster --name Kubernetes-gitactions-cluster \
-         - region ${{ secrets.AWS_REGION }} \
-         - node-type t3.micro
+         eksctl create cluster \
+         --name Kubernetes-ghactions-cluster \
+         --region eu-west-2 \
+         --nodegroup-name linux-nodes \
+         --node-type t3.micro \
+         --nodes 2 \
+         --nodes-min 1 \
+         --nodes-max 3 \
+         --managed
  
     - name: Login to Amazon ECR
       id: login-ecr
