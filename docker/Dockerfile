@@ -6,6 +6,7 @@ WORKDIR /python-docker
 
 COPY code/requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
+RUN pip3 freeze > requirements.txt
 
 COPY code/. .
 
