@@ -16,7 +16,7 @@ jobs:
   build:
     
     name: Deployment
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
 
@@ -43,17 +43,18 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}        
         IMAGE_TAG: ${{ steps.commit.outputs.short }}
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f docker/Dockerfile .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
+        #docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f docker/Dockerfile .
+        #docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker build -t ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:$IMAGE_TAG -f docker/Dockerfile .
+        docker push ${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:$IMAGE_TAG
     - name: Update kube config
-      run: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
-
+      #run: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
+      run: aws eks update-kubeconfig --name ${{env.EKS_CLUSTER_NAME}} --region ${{env.AWS_REGION}}
     - name: Deploy to EKS
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}        
         IMAGE_TAG: ${{ steps.commit.outputs.short }}
       run: |
-        sed -i.bak "s|DOCKER_IMAGE|$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG|g" manifests/hello-app-deployment.yaml && \
+        sed -i.bak "s|DOCKER_IMAGE|${{env.ECR_REGISTRY}}/${{env.ECR_REPOSITORY}}:$IMAGE_TAG|g" manifests/hello-app-deployment.yaml && \
         kubectl apply -f manifests/hello-app-deployment.yaml
         kubectl apply -f manifests/hello-app-service.yaml
