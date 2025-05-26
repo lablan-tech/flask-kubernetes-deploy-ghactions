@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: hello-app
-        image: ${{env.ECR_REPOSITORY}}/flask-app:776ab02
+        image: ${{env.ECR_REPOSITORY}}/${{env.IMAGE}}
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
