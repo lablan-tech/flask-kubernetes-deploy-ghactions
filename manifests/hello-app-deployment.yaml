@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: hello-app
-        image: ${{env.ECR_REPOSITORY}}/${{env.IMAGE}}
+        image: ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}/${{ secrets.IMAGE_TAG }}
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
