@@ -47,7 +47,7 @@ jobs:
     - name: Kubernetes Installation with eksctl
       run: |
          eksctl create cluster \
-         --name Kubernetes-ghactions-cluster \
+         --name ${{ secrets.ECR_REGISTRY }}  \
          --region eu-west-2 \
          --nodegroup-name linux-nodes \
          --node-type t3.micro \
@@ -71,7 +71,7 @@ jobs:
         docker push ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
     - name: Update kube config
       #run: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
-      run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
+      run: aws eks update-kubeconfig --name ${{ secrets.ECR_REGISTRY }} --region ${{ secrets.AWS_REGION }}
     - name: Deploy to EKS
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}        
