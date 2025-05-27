@@ -44,33 +44,33 @@ jobs:
          tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
          sudo mv /tmp/eksctl /usr/local/bin
 
-    #- name: Kubernetes Installation with eksctl
-     # run: |
-     #    eksctl delete cluster \
-     #    --name Kubernetes-ghactions-cluster  \
-      #   --region eu-west-2 \
+    - name: Kubernetes Delete Installation with eksctl
+      run: |
+        eksctl delete cluster \
+        --name Kubernetes-ghactions-cluster  \
+        --region eu-west-2 \
          
-    - name: Kubernetes Installation with eksctl
-      run: |
-         eksctl create cluster \
-         --name Kubernetes-ghactions-cluster  \
-         --region eu-west-2 \
-         --nodegroup-name linux-nodes \
-         --node-type t3.micro \
-         --nodes 2 \
-         --nodes-min 1 \
-         --nodes-max 3 \
-         --managed
-    - name: Generate kubeconfig
-      run: |
-        {
-            echo 'EKS_CREDS<<EOF'
-            aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }}  --region ${{ secrets.AWS_REGION }}  --dry-run | base64
-            echo EOF
-        } >> $GITHUB_ENV
-    - uses: tale/kubectl-action@v1
-      with:
-        base64-kube-config: ${{ env.EKS_CREDS }}
+    # - name: Kubernetes Installation with eksctl
+    #   run: |
+    #      eksctl create cluster \
+    #      --name Kubernetes-ghactions-cluster  \
+    #      --region eu-west-2 \
+    #      --nodegroup-name linux-nodes \
+    #      --node-type t3.micro \
+    #      --nodes 2 \
+    #      --nodes-min 1 \
+    #      --nodes-max 3 \
+    #      --managed
+    # - name: Generate kubeconfig
+    #   run: |
+    #     {
+    #         echo 'EKS_CREDS<<EOF'
+    #         aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }}  --region ${{ secrets.AWS_REGION }}  --dry-run | base64
+    #         echo EOF
+    #     } >> $GITHUB_ENV
+    # - uses: tale/kubectl-action@v1
+    #   with:
+    #     base64-kube-config: ${{ env.EKS_CREDS }}
     #- run: kubectl get pods
     
     - name: Login to Amazon ECR
@@ -100,4 +100,4 @@ jobs:
         sed -i.bak "s|DOCKER_IMAGE|${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}|g" manifests/hello-app-deployment.yaml && \
         kubectl apply -f manifests/hello-app-deployment.yaml
         kubectl apply -f manifests/hello-app-service.yaml
-        kubectl get pods --all-namespaces
+        #kubectl get pods --all-namespaces
